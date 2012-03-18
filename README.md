@@ -1,5 +1,7 @@
 SyncedSideBar
 =============
+The support built in Sublime Text 2 only highlights files in folders that are already expanded in the sidebar.
+This plugin highlights all files.
 
 [Sublime Text 2](http://www.sublimetext.com/) plugin to sync project sidebar
 (folder view) with currently active file.
