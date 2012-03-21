@@ -4,6 +4,8 @@ SyncedSideBar
 [Sublime Text 2](http://www.sublimetext.com/) plugin to sync project sidebar
 (folder view) with currently active file.
 
+Sublime Text 2 highlights only those files that are already expanded. This plugin highlights all files (eg. opened with cmd+p).
+
 Figured out by Mylith at sublimetext.com forum.
 http://www.sublimetext.com/forum/viewtopic.php?f=2&t=4080
 
