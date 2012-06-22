@@ -12,6 +12,13 @@ http://www.sublimetext.com/forum/viewtopic.php?f=2&t=4080
 Installation
 ------------
 
+### Using Package control
+
+This plugin is available through [Package Control](http://wbond.net/sublime_packages/package_control),
+which is the easiest way to install it
+
+### Manual installation
+
 Go to your Packages subdirectory under Sublime Text 2 data directory:
 
 * Windows: %APPDATA%\Sublime Text 2
