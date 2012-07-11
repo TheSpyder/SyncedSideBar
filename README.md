@@ -15,7 +15,7 @@ Installation
 ### Using Package control
 
 This plugin is available through [Package Control](http://wbond.net/sublime_packages/package_control),
-which is the easiest way to install it
+which is the easiest way to install it.
 
 ### Manual installation
 
