@@ -12,6 +12,16 @@ http://www.sublimetext.com/forum/viewtopic.php?f=2&t=4080
 Usage
 -----
 
+### Configuration
+
+SyncedSideBar enables/disables automatic syncing via the setting `reveal-on-activate`.
+
+If `true`, syncing will automatically happen. If `false`, syncing will be disabled.
+
+Helper commands for enabling/disabling automatic syncing are available as 'Side Bar: Enable Sync' and 'Side Bar: Disable Sync'.
+
+This can be found in the Command Palette (Command+Shift+P on Mac, Ctrl+Shift+P on Linux/Windows).
+
 ### Manually reveal files
 
 Files can be manually revealed via the command 'Side Bar: Reveal File'.
