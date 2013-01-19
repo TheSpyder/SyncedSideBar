@@ -2,5 +2,13 @@
     {
         "caption": "Side Bar: Reveal File",
         "command": "reveal_in_side_bar"
+    },
+	{
+        "caption": "Side Bar: Enable Syncing",
+        "command": "side_bar_enable_sync"
+    },
+    {
+        "caption": "Side Bar: Disable Syncing",
+        "command": "side_bar_disable_sync"
     }
 ]
