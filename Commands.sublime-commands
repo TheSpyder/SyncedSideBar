@@ -1,0 +1,6 @@
+[
+    {
+        "caption": "Side Bar: Reveal File",
+        "command": "reveal_in_side_bar"
+    }
+]
