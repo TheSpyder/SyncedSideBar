@@ -13,4 +13,11 @@ class SideBarListener(sublime_plugin.EventListener):
 class SideBarEnableSync(sublime_plugin.ApplicationCommand):
 
     def run(self):
-        sublime.error_message("Hello World!")
+        # Load in user settings
+        settings = sublime.load_settings("Preferences.sublime-settings")
+
+        # Update the setting
+        settings.set("reveal-on-activate", True)
+
+        # Save our changes
+        sublime.save_settings("Preferences.sublime-settings")
