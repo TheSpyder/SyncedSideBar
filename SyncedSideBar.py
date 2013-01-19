@@ -10,14 +10,30 @@ class SideBarListener(sublime_plugin.EventListener):
             active.run_command('reveal_in_side_bar')
 
 
-class SideBarEnableSync(sublime_plugin.ApplicationCommand):
+class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
 
     def run(self):
-        # Load in user settings
-        settings = sublime.load_settings("Preferences.sublime-settings")
+        pass
 
-        # Update the setting
-        settings.set("reveal-on-activate", True)
+    def updateSync(self):
+        sublime.error_message("Hello World!")
 
-        # Save our changes
-        sublime.save_settings("Preferences.sublime-settings")
+
+class SideBarEnableSync(SideBarUpdateSync):
+
+    def run(self):
+        self.updateSync()
+
+
+
+# class SideBarEnableSync(sublime_plugin.ApplicationCommand):
+
+    # def run(self):
+    #     # Load in user settings
+    #     settings = sublime.load_settings("Preferences.sublime-settings")
+
+    #     # Update the setting
+    #     settings.set("reveal-on-activate", True)
+
+    #     # Save our changes
+    #     sublime.save_settings("Preferences.sublime-settings")
