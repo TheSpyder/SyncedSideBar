@@ -15,25 +15,24 @@ class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
     def run(self):
         pass
 
-    def updateSync(self):
-        sublime.error_message("Hello World!")
+    def updateSync(self, value):
+        # Load in user settings
+        settings = sublime.load_settings("Preferences.sublime-settings")
+
+        # Update the setting
+        settings.set("reveal-on-activate", value)
+
+        # Save our changes
+        sublime.save_settings("Preferences.sublime-settings")
 
 
 class SideBarEnableSync(SideBarUpdateSync):
 
     def run(self):
-        self.updateSync()
+        self.updateSync(True)
 
 
+class SideBarDisableSync(SideBarUpdateSync):
 
-# class SideBarEnableSync(sublime_plugin.ApplicationCommand):
-
-    # def run(self):
-    #     # Load in user settings
-    #     settings = sublime.load_settings("Preferences.sublime-settings")
-
-    #     # Update the setting
-    #     settings.set("reveal-on-activate", True)
-
-    #     # Save our changes
-    #     sublime.save_settings("Preferences.sublime-settings")
+    def run(self):
+        self.updateSync(False)
