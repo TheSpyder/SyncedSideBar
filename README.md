@@ -12,6 +12,12 @@ http://www.sublimetext.com/forum/viewtopic.php?f=2&t=4080
 Usage
 -----
 
+#### Note
+
+This plugin works on both Sublime Text 2 and Sublime Text 3 beta. None of the APIs this plugin uses changed between releases.
+
+When running on Sublime Text 3 beta, the plugin is able track the sidebar visibility (but only when the keyboard shortcut for "toggle_side_bar" is used, not the view -> sidebar toggle). It still forces the sidebar to become visible the first time a window is activated, but after that the plugin will detect when the keyboard shortcut is used and stop calling "reveal_in_side_bar" until it is used again. It will even remember the visible state when multiple windows are open.
+
 ### Configuration
 
 SyncedSideBar enables/disables automatic syncing via the setting `reveal-on-activate`.
