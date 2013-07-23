@@ -34,7 +34,7 @@ class SideBarListener(sublime_plugin.EventListener):
             sidebar_visible = windows[active.id()]
             lastActive = active
 
-        if sidebar_visible and view.settings().get('reveal-on-activate'):
+        if sidebar_visible and view.settings().get('reveal-on-activate') != False:
             active.run_command('reveal_in_side_bar')
 
     # Sublime text v3 window command listener, safe to include unconditionally as it's simply ignored by v2.
