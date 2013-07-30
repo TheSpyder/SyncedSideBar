@@ -15,22 +15,26 @@ windows = {}
 class SideBarListener(sublime_plugin.EventListener):
 
     def on_activated(self, view):
+        activeWindow = view.window()
+
+        # don't even consider updating state if we don't have an activeWindow.
+        # "goto anything" doesn't set activeWindow until the file is selected.
+        # also, reveal in side bar is a window command only.
+        if not activeWindow:
+            return
+
         global lastView
         if lastView is not None and lastView.id() == view.id():
             # this view has already been processed, likely an alt-tab focus event
             return
+
         lastView = view
-
-        global sidebar_visible, lastWindow
-        activeWindow = view.window()
-
-        if not activeWindow:
-            return
 
         if not activeWindow.id() in windows:
             # first activation in this window, use default
             windows[activeWindow.id()] = DEFAULT_VISIBILITY
 
+        global sidebar_visible, lastWindow
         if lastWindow is None:
             # plugin just loaded
             lastWindow = activeWindow
