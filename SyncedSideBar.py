@@ -15,17 +15,20 @@ windows = {}
 class SideBarListener(sublime_plugin.EventListener):
 
     def on_activated(self, view):
+        print('plugin trigger, ID', view.id())
         activeWindow = view.window()
 
         # don't even consider updating state if we don't have an activeWindow.
         # "goto anything" doesn't set activeWindow until the file is selected.
         # also, reveal in side bar is a window command only.
         if not activeWindow:
+            print('bailing, no active window')
             return
 
         global lastView
         if lastView is not None and lastView.id() == view.id():
             # this view has already been processed, likely an alt-tab focus event
+            print('bailing, view already focussed')
             return
 
         lastView = view
@@ -46,7 +49,11 @@ class SideBarListener(sublime_plugin.EventListener):
             lastWindow = activeWindow
 
         if sidebar_visible and view.settings().get('reveal-on-activate') != False:
+            print('revealing')
             activeWindow.run_command('reveal_in_side_bar')
+        else:
+            print('not revealing, visibity is', sidebar_visible, 'setting is', view.settings().get('reveal-on-activate'))
+
 
     # Sublime text v3 window command listener, safe to include unconditionally as it's simply ignored by v2.
     def on_window_command(self, window, command_name, args):
