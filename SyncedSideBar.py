@@ -46,7 +46,13 @@ class SideBarListener(sublime_plugin.EventListener):
             lastWindow = activeWindow
 
         if sidebar_visible and view.settings().get('reveal-on-activate') != False:
-            activeWindow.run_command('reveal_in_side_bar')
+
+            def reveal():
+                activeWindow.run_command('reveal_in_side_bar')
+
+            # When using quick switch project, the view activates before the sidebar is ready.
+            # This tiny delay is imperceptible but works around the issue.
+            sublime.set_timeout(reveal, 100);
 
     # Sublime text v3 window command listener, safe to include unconditionally as it's simply ignored by v2.
     def on_window_command(self, window, command_name, args):
