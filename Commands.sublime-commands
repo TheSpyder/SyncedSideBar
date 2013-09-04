@@ -1,14 +1,19 @@
 [
+    // This is actually a sublime built-in command, on the right click menu by default
     {
         "caption": "Side Bar: Reveal File",
         "command": "reveal_in_side_bar"
     },
+
+    // SyncedSideBar commands
 	{
         "caption": "Side Bar: Enable Syncing",
-        "command": "side_bar_enable_sync"
+        "command": "side_bar_update_sync",
+        "args": { "enable": true }
     },
     {
         "caption": "Side Bar: Disable Syncing",
-        "command": "side_bar_disable_sync"
+        "command": "side_bar_update_sync",
+        "args": { "enable": false }
     }
 ]
