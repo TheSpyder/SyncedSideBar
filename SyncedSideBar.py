@@ -4,16 +4,39 @@ import sublime_plugin
 # assume sidebar is visible by default on every window (there's no way to check, unfortunately)
 DEFAULT_VISIBILITY = True
 
+pref_reveal = DEFAULT_VISIBILITY
+
 sidebar_visible = DEFAULT_VISIBILITY
 lastWindow = None
 lastView = None
 
-# Keep track of active windows so we rememeber sidebar_visible for each one
+# Keep track of active windows so we remember sidebar_visible for each one
 windows = {}
+
+def plugin_loaded():
+    s = sublime.load_settings('SyncedSideBar.sublime-settings')
+
+    def read_pref():
+        vis = s.get('reveal-on-activate')
+        if vis is not None:
+            global pref_reveal
+            pref_reveal = vis
+
+    # read initial setting
+    read_pref()
+    # listen for changes
+    s.add_on_change("SyncedSideBar", read_pref)
+
+# ST2 backwards compatibility
+if (int(sublime.version()) < 3000):
+    plugin_loaded()
+
+def should_be_visible(view):
+    viewSetting = view.settings().get('reveal-on-activate')
+    return viewSetting if viewSetting is not None else pref_reveal
 
 
 class SideBarListener(sublime_plugin.EventListener):
-
     def on_activated(self, view):
         activeWindow = view.window()
 
@@ -45,8 +68,7 @@ class SideBarListener(sublime_plugin.EventListener):
             sidebar_visible = windows[activeWindow.id()]
             lastWindow = activeWindow
 
-        if sidebar_visible and view.settings().get('reveal-on-activate') != False:
-
+        if sidebar_visible and should_be_visible(view) != False:
             def reveal():
                 activeWindow.run_command('reveal_in_side_bar')
 
@@ -62,7 +84,6 @@ class SideBarListener(sublime_plugin.EventListener):
 
 
 class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
-
     def run(self):
         pass
 
@@ -78,12 +99,10 @@ class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
 
 
 class SideBarEnableSync(SideBarUpdateSync):
-
     def run(self):
         self.updateSync(True)
 
 
 class SideBarDisableSync(SideBarUpdateSync):
-
     def run(self):
         self.updateSync(False)

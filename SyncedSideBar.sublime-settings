@@ -1,4 +1,9 @@
 {
-	// Plugin active state. Allows projects to override this setting if it's annoying without disabling the plugin entirely.
+	/*
+	 * Plugin active state. Defaults to true.
+	 * Can be overridden by:
+	 *  - user preferences (either manually or using the enable/disable sync commands)
+	 *  - project file settings
+	 */
 	"reveal-on-activate": true
 }
