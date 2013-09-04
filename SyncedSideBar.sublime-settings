@@ -1,6 +1,9 @@
 {
 	/*
-	 * Plugin active state. Defaults to true.
+	 * Plugin active state.
+	 *
+	 * Defaults to true. Changes are applied without requiring a reload.
+	 *
 	 * Can be overridden by:
 	 *  - user preferences (either manually or using the enable/disable sync commands)
 	 *  - project file settings
