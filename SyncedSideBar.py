@@ -58,8 +58,9 @@ def show_view(view):
     reveal = userPref if userPref is not None else pluginPref
 
     if sidebarVisible and reveal != False:
+        win = view.window()
         def reveal():
-            view.window().run_command('reveal_in_side_bar')
+            win.run_command('reveal_in_side_bar')
 
         # When using quick switch project, the view activates before the sidebar is ready.
         # This tiny delay is imperceptible but works around the issue.
