@@ -1,12 +1,22 @@
+/* All settings are applied without requiring a reload.
+ *
+ * Can be overridden by:
+ *  - user preferences (either manually or using the enable/disable sync commands)
+ *  - project file settings
+ */
 {
 	/*
 	 * Plugin active state.
 	 *
-	 * Defaults to true. Changes are applied without requiring a reload.
-	 *
-	 * Can be overridden by:
-	 *  - user preferences (either manually or using the enable/disable sync commands)
-	 *  - project file settings
+	 * Defaults to true.
 	 */
-	"reveal-on-activate": true
+	"reveal-on-activate": true,
+
+	/*
+	 * Controls window switch behaviour.
+	 *
+	 * By default, when new windows are opened the plugin will switch to
+	 * all available views so the sidebar is expanded properly.
+	 */
+	"reveal-all-tabs": true
 }

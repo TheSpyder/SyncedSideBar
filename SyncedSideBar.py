@@ -33,6 +33,23 @@ def plugin_loaded():
 if (int(sublime.version()) < 3000):
     plugin_loaded()
 
+def reveal_all(view):
+    if (view.settings().get('reveal-all-tabs') is False):
+        return
+
+    activeWindow = view.window()
+
+    viewList = activeWindow.views();
+    # Use set_timeout to give sublime a chance to fire normal events between tab changes
+    def reveal():
+        if (len(viewList) > 0):
+            target = viewList.pop()
+            activeWindow.focus_view(target)
+            sublime.set_timeout(reveal, 25);
+        else:
+            activeWindow.focus_view(view)
+    sublime.set_timeout(reveal, 50);
+
 
 def manage_state(view):
     activeWindow = view.window()
@@ -40,6 +57,9 @@ def manage_state(view):
     if not activeWindow.id() in windows:
         # first activation in this window, use default
         windows[activeWindow.id()] = DEFAULT_VISIBILITY
+
+        # fire 'reveal all' in the background
+        reveal_all(view)
 
     global sidebarVisible, lastWindow
     if lastWindow is None:
