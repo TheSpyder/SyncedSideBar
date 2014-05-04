@@ -47,6 +47,7 @@ def reveal_all(view):
             activeWindow.focus_view(target)
             sublime.set_timeout(reveal, 25);
         else:
+            # all tabs have been activated in this window, restore focus to the tab that was first active
             activeWindow.focus_view(view)
     sublime.set_timeout(reveal, 50);
 
