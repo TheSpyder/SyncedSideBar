@@ -1,19 +1,23 @@
 import sublime
 import sublime_plugin
 
-# assume sidebar is visible by default on every window (there's no way to check, unfortunately)
+# ++++ old hacks ++++
+# before ST3 build 3098 we assume sidebar is visible by default on every window (there's no way to check, unfortunately)
 DEFAULT_VISIBILITY = True
 sidebarVisible = DEFAULT_VISIBILITY
+
+# Keep track of active windows so we remember sidebarVisible for each one
+lastWindow = None
+# ++++ end old hacks ++++
+
+# Used to know whether we've run reveal_all for a window
+windows = {}
 
 # preference from plugin settings file
 pluginPref = DEFAULT_VISIBILITY
 
 # flag for alt-tab focus check
 lastView = None
-
-# Keep track of active windows so we remember sidebarVisible for each one
-lastWindow = None
-windows = {}
 
 def plugin_loaded():
     s = sublime.load_settings('SyncedSideBar.sublime-settings')
@@ -56,30 +60,41 @@ def manage_state(view):
     activeWindow = view.window()
 
     if not activeWindow.id() in windows:
-        # first activation in this window, use default
+        # first activation in this window, use default (unused for 3098 and above, but we need to store *something*)
         windows[activeWindow.id()] = DEFAULT_VISIBILITY
 
         # fire 'reveal all' in the background
         reveal_all(view)
 
-    global sidebarVisible, lastWindow
-    if lastWindow is None:
-        # plugin just loaded
-        lastWindow = activeWindow
-    elif lastWindow.id() != activeWindow.id():
-        # store the old window state
-        windows[lastWindow.id()] = sidebarVisible
-        # load the new window state
-        sidebarVisible = windows[activeWindow.id()]
-        lastWindow = activeWindow
+
+    # ++++ old hacks ++++
+    if (int(sublime.version()) < 3098):
+        global sidebarVisible, lastWindow
+        if lastWindow is None:
+            # plugin just loaded
+            lastWindow = activeWindow
+        elif lastWindow.id() != activeWindow.id():
+            # store the old window state
+            windows[lastWindow.id()] = sidebarVisible
+            # load the new window state
+            sidebarVisible = windows[activeWindow.id()]
+            lastWindow = activeWindow
+    # ++++ end old hacks ++++
 
 
 def show_view(view):
     userPref = view.settings().get('reveal-on-activate')
     reveal = userPref if userPref is not None else pluginPref
 
-    if sidebarVisible and reveal != False:
-        win = view.window()
+    win = view.window()
+
+    # backwards compatibility
+    if (int(sublime.version()) >= 3098):
+        shouldReveal = win.is_sidebar_visible()
+    else:
+        shouldReveal = sidebarVisible
+
+    if shouldReveal and reveal != False:
         def reveal():
             win.run_command('reveal_in_side_bar')
 
@@ -98,7 +113,7 @@ class SideBarListener(sublime_plugin.EventListener):
 
         global lastView
         if lastView is not None and lastView.id() == view.id():
-            # this view has already been processed, likely an alt-tab focus event
+            # this view has just been processed, likely an alt-tab focus event
             return
         lastView = view
 
@@ -107,6 +122,7 @@ class SideBarListener(sublime_plugin.EventListener):
 
 
     # Sublime text v3 window command listener, safe to include unconditionally as it's simply ignored by v2.
+    # Eventually, v3 support below 3098 will be dropped and this can be deleted.
     def on_window_command(self, window, command_name, args):
         if command_name == "toggle_side_bar":
             global sidebarVisible
