@@ -6,9 +6,6 @@ SyncedSideBar
 
 Sublime Text highlights only those files that are already expanded. This plugin highlights all files (eg. opened with cmd+p).
 
-Figured out by Mylith at sublimetext.com forum.
-http://www.sublimetext.com/forum/viewtopic.php?f=2&t=4080
-
 Usage
 -----
 
@@ -54,3 +51,9 @@ Then clone this repository:
 
     git clone https://github.com/TheSpyder/SyncedSideBar.git
 
+### Credits
+
+Original technique figured out by Mylith at sublimetext.com forum.
+http://www.sublimetext.com/forum/viewtopic.php?f=2&t=4080
+
+Created by [@sobstel](https://github.com/sobstel) in 2012, I took over development about a year later. Project migrated here in 2016. 
