@@ -19,11 +19,14 @@ pluginPref = DEFAULT_VISIBILITY
 # flag for alt-tab focus check
 lastView = None
 
+userSettings = None
+
 def plugin_loaded():
-    s = sublime.load_settings('SyncedSideBar.sublime-settings')
+    global userSettings
+    userSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
 
     def read_pref():
-        vis = s.get('reveal-on-activate')
+        vis = userSettings.get('reveal-on-activate')
         if vis is not None:
             global pluginPref
             pluginPref = vis
@@ -31,14 +34,15 @@ def plugin_loaded():
     # read initial setting
     read_pref()
     # listen for changes
-    s.add_on_change("SyncedSideBar", read_pref)
+    userSettings.add_on_change("SyncedSideBar", read_pref)
 
 # ST2 backwards compatibility
 if (int(sublime.version()) < 3000):
     plugin_loaded()
 
 def reveal_all(view):
-    if (view.settings().get('reveal-all-tabs') is False):
+    global userSettings
+    if (userSettings.get('reveal-all-tabs') is False):
         return
 
     activeWindow = view.window()
