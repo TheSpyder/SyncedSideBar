@@ -136,6 +136,6 @@ class SideBarListener(sublime_plugin.EventListener):
 class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
     # Update user preferences with the new value
     def run(self, enable):
-        settings = sublime.load_settings("Preferences.sublime-settings")
-        settings.set("reveal-on-activate", enable)
-        sublime.save_settings("Preferences.sublime-settings")
+        global userSettings
+        userSettings.set("reveal-on-activate", enable)
+        sublime.save_settings("SyncedSideBar.sublime-settings")
