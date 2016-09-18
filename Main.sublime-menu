@@ -22,7 +22,7 @@
                             },
                             {
                                 "command": "open_file", 
-                                "args": {"file": "${packages}/User/Preferences.sublime-settings"},
+                                "args": {"file": "${packages}/User/SyncedSideBar.sublime-settings"},
                                 "caption": "Settings – User"
                             },
                             { "caption": "-" }
