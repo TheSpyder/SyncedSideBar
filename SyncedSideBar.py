@@ -19,22 +19,36 @@ pluginPref = DEFAULT_VISIBILITY
 # flag for alt-tab focus check
 lastView = None
 
-userSettings = None
+# The user settings on the Preferences.sublime-settings and SyncedSideBar.sublime-settings
+userSettings    = None
+packageSettings = None
 
 def plugin_loaded():
     global userSettings
-    userSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
+    global packageSettings
 
-    def read_pref():
+    userSettings    = sublime.load_settings('Preferences.sublime-settings')
+    packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
+
+    def read_pref_user():
         vis = userSettings.get('reveal-on-activate')
         if vis is not None:
             global pluginPref
             pluginPref = vis
 
+    def read_pref_package():
+        vis = packageSettings.get('reveal-on-activate')
+        if vis is not None:
+            global pluginPref
+            pluginPref = vis
+
     # read initial setting
-    read_pref()
+    read_pref_package()
+    read_pref_user()
+
     # listen for changes
-    userSettings.add_on_change("SyncedSideBar", read_pref)
+    userSettings.add_on_change("Preferences", read_pref_user)
+    packageSettings.add_on_change("SyncedSideBar", read_pref_package)
 
 # ST2 backwards compatibility
 if (int(sublime.version()) < 3000):
@@ -42,11 +56,18 @@ if (int(sublime.version()) < 3000):
 
 def reveal_all(view):
     global userSettings
-    if (userSettings.get('reveal-all-tabs') is False):
+    visUser = userSettings.get('reveal-all-tabs')
+
+    if visUser is False:
+        return
+
+    global packageSettings
+    visPackage = packageSettings.get('reveal-all-tabs')
+
+    if visPackage is False:
         return
 
     activeWindow = view.window()
-
     viewList = activeWindow.views();
     # Use set_timeout to give sublime a chance to fire normal events between tab changes
     def reveal():
@@ -137,5 +158,18 @@ class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
     # Update user preferences with the new value
     def run(self, enable):
         global userSettings
-        userSettings.set("reveal-on-activate", enable)
-        sublime.save_settings("SyncedSideBar.sublime-settings")
+        vis = userSettings.get('reveal-on-activate')
+        
+        if vis is not None:
+            userSettings.set("reveal-on-activate", enable)
+            sublime.save_settings("Preferences.sublime-settings")
+            
+        else:
+            global packageSettings
+            vis = packageSettings.get('reveal-on-activate')
+            
+            if vis is not None:
+                packageSettings.set("reveal-on-activate", enable)
+                sublime.save_settings("SyncedSideBar.sublime-settings")
+
+
