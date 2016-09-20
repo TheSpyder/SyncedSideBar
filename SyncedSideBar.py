@@ -19,14 +19,7 @@ pluginPref = DEFAULT_VISIBILITY
 # flag for alt-tab focus check
 lastView = None
 
-# The user settings on the Preferences.sublime-settings and SyncedSideBar.sublime-settings
-userSettings    = None
-packageSettings = None
-
 def plugin_loaded():
-    global userSettings
-    global packageSettings
-
     userSettings    = sublime.load_settings('Preferences.sublime-settings')
     packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
 
@@ -47,28 +40,28 @@ def plugin_loaded():
     read_pref_user()
 
     # listen for changes
-    userSettings.add_on_change("Preferences", read_pref_user)
-    packageSettings.add_on_change("SyncedSideBar", read_pref_package)
+    userSettings.add_on_change('Preferences', read_pref_user)
+    packageSettings.add_on_change('SyncedSideBar', read_pref_package)
+
 
 # ST2 backwards compatibility
 if (int(sublime.version()) < 3000):
     plugin_loaded()
 
 def reveal_all(view):
-    global userSettings
-    visUser = userSettings.get('reveal-all-tabs')
-
+    visUser = view.settings().get('reveal-all-tabs')
+    #print( 'view.settings().get(reveal-all-tabs): ' + str( visUser ) )
     if visUser is False:
         return
-
-    global packageSettings
-    visPackage = packageSettings.get('reveal-all-tabs')
-
+    
+    packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
+    visPackage      = packageSettings.get('reveal-all-tabs')
     if visPackage is False:
         return
-
-    activeWindow = view.window()
-    viewList = activeWindow.views();
+    
+    activeWindow = view.window();
+    viewList     = activeWindow.views();
+    
     # Use set_timeout to give sublime a chance to fire normal events between tab changes
     def reveal():
         if (len(viewList) > 0):
@@ -132,7 +125,7 @@ class SideBarListener(sublime_plugin.EventListener):
     def on_activated(self, view):
         # don't even consider updating state if we don't have a window.
         # reveal in side bar is a window command only.
-        # "goto anything" activates views but doesn't set a window until the file is selected.
+        # 'goto anything' activates views but doesn't set a window until the file is selected.
         if not view.window():
             return
 
@@ -149,7 +142,7 @@ class SideBarListener(sublime_plugin.EventListener):
     # Sublime text v3 window command listener, safe to include unconditionally as it's simply ignored by v2.
     # Eventually, v3 support below 3098 will be dropped and this can be deleted.
     def on_window_command(self, window, command_name, args):
-        if command_name == "toggle_side_bar":
+        if command_name == 'toggle_side_bar':
             global sidebarVisible
             sidebarVisible = not sidebarVisible
 
@@ -157,19 +150,15 @@ class SideBarListener(sublime_plugin.EventListener):
 class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
     # Update user preferences with the new value
     def run(self, enable):
-        global userSettings
-        vis = userSettings.get('reveal-on-activate')
-        
+        userSettings = sublime.load_settings('Preferences.sublime-settings')
+        vis          = userSettings.get('reveal-on-activate')
         if vis is not None:
-            userSettings.set("reveal-on-activate", enable)
-            sublime.save_settings("Preferences.sublime-settings")
-            
+            userSettings.set('reveal-on-activate', enable)
+            sublime.save_settings('Preferences.sublime-settings')
         else:
-            global packageSettings
-            vis = packageSettings.get('reveal-on-activate')
-            
-            if vis is not None:
-                packageSettings.set("reveal-on-activate", enable)
-                sublime.save_settings("SyncedSideBar.sublime-settings")
+            packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
+            vis             = packageSettings.get('reveal-on-activate')
+            packageSettings.set('reveal-on-activate', enable)
+            sublime.save_settings('SyncedSideBar.sublime-settings')
 
 
