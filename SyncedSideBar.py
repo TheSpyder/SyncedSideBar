@@ -157,7 +157,6 @@ class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
             sublime.save_settings('Preferences.sublime-settings')
         else:
             packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
-            vis             = packageSettings.get('reveal-on-activate')
             packageSettings.set('reveal-on-activate', enable)
             sublime.save_settings('SyncedSideBar.sublime-settings')
 
