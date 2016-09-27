@@ -51,17 +51,18 @@ if (int(sublime.version()) < 3000):
 def reveal_all(view):
     visUser = view.settings().get('reveal-all-tabs')
     #print( 'view.settings().get(reveal-all-tabs): ' + str( visUser ) )
-    if visUser is False:
+
+    if visUser is None:
+        packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
+        visPackage      = packageSettings.get('reveal-all-tabs')
+        if visPackage is False:
+            return
+    elif visUser is False:
         return
-    
-    packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
-    visPackage      = packageSettings.get('reveal-all-tabs')
-    if visPackage is False:
-        return
-    
+
     activeWindow = view.window();
     viewList     = activeWindow.views();
-    
+
     # Use set_timeout to give sublime a chance to fire normal events between tab changes
     def reveal():
         if (len(viewList) > 0):
