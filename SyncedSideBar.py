@@ -20,30 +20,49 @@ pluginPref = DEFAULT_VISIBILITY
 lastView = None
 
 def plugin_loaded():
-    s = sublime.load_settings('SyncedSideBar.sublime-settings')
+    userSettings    = sublime.load_settings('Preferences.sublime-settings')
+    packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
 
-    def read_pref():
-        vis = s.get('reveal-on-activate')
+    def read_pref_user():
+        vis = userSettings.get('reveal-on-activate')
+        if vis is not None:
+            global pluginPref
+            pluginPref = vis
+
+    def read_pref_package():
+        vis = packageSettings.get('reveal-on-activate')
         if vis is not None:
             global pluginPref
             pluginPref = vis
 
     # read initial setting
-    read_pref()
+    read_pref_package()
+    read_pref_user()
+
     # listen for changes
-    s.add_on_change("SyncedSideBar", read_pref)
+    userSettings.add_on_change('Preferences', read_pref_user)
+    packageSettings.add_on_change('SyncedSideBar', read_pref_package)
+
 
 # ST2 backwards compatibility
 if (int(sublime.version()) < 3000):
     plugin_loaded()
 
 def reveal_all(view):
-    if (view.settings().get('reveal-all-tabs') is False):
+    visUser = view.settings().get('reveal-all-tabs')
+    #print( 'view.settings().get(reveal-all-tabs): ' + str( visUser ) )
+
+    if visUser is None:
+        packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
+        visPackage      = packageSettings.get('reveal-all-tabs')
+        if visPackage is False:
+            return
+    elif visUser is False:
         return
 
-    activeWindow = view.window()
+    activeWindow = view.window();
+    viewList     = activeWindow.views();
 
-    viewList = activeWindow.views();
     # Use set_timeout to give sublime a chance to fire normal events between tab changes
     def reveal():
         if (len(viewList) > 0):
@@ -107,7 +126,7 @@ class SideBarListener(sublime_plugin.EventListener):
     def on_activated(self, view):
         # don't even consider updating state if we don't have a window.
         # reveal in side bar is a window command only.
-        # "goto anything" activates views but doesn't set a window until the file is selected.
+        # 'goto anything' activates views but doesn't set a window until the file is selected.
         if not view.window():
             return
 
@@ -124,7 +143,7 @@ class SideBarListener(sublime_plugin.EventListener):
     # Sublime text v3 window command listener, safe to include unconditionally as it's simply ignored by v2.
     # Eventually, v3 support below 3098 will be dropped and this can be deleted.
     def on_window_command(self, window, command_name, args):
-        if command_name == "toggle_side_bar":
+        if command_name == 'toggle_side_bar':
             global sidebarVisible
             sidebarVisible = not sidebarVisible
 
@@ -132,6 +151,14 @@ class SideBarListener(sublime_plugin.EventListener):
 class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
     # Update user preferences with the new value
     def run(self, enable):
-        settings = sublime.load_settings("Preferences.sublime-settings")
-        settings.set("reveal-on-activate", enable)
-        sublime.save_settings("Preferences.sublime-settings")
+        userSettings = sublime.load_settings('Preferences.sublime-settings')
+        vis          = userSettings.get('reveal-on-activate')
+        if vis is not None:
+            userSettings.set('reveal-on-activate', enable)
+            sublime.save_settings('Preferences.sublime-settings')
+        else:
+            packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
+            packageSettings.set('reveal-on-activate', enable)
+            sublime.save_settings('SyncedSideBar.sublime-settings')
+
+
