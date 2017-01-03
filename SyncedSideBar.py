@@ -104,22 +104,22 @@ def manage_state(view):
 def show_view(view):
     userPref = view.settings().get('reveal-on-activate')
     reveal = userPref if userPref is not None else pluginPref
-
     win = view.window()
 
-    # backwards compatibility
-    if (int(sublime.version()) >= 3098):
-        shouldReveal = win.is_sidebar_visible()
-    else:
-        shouldReveal = sidebarVisible
+    def revealLater():
+        if (int(sublime.version()) >= 3098):
+            # API provided by sublime
+            shouldReveal = win.is_sidebar_visible()
+        else:
+            # backwards compatibility
+            shouldReveal = sidebarVisible
 
-    if shouldReveal and reveal != False:
-        def reveal():
+        if shouldReveal and reveal != False:
             win.run_command('reveal_in_side_bar')
 
-        # When using quick switch project, the view activates before the sidebar is ready.
-        # This tiny delay is imperceptible but works around the issue.
-        sublime.set_timeout(reveal, 100);
+    # When using quick switch project, the view activates before the sidebar is ready.
+    # This tiny delay is imperceptible but works around the issue.
+    sublime.set_timeout(revealLater, 100);
 
 
 class SideBarListener(sublime_plugin.EventListener):
