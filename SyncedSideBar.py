@@ -127,7 +127,7 @@ class SideBarListener(sublime_plugin.EventListener):
         # don't even consider updating state if we don't have a window.
         # reveal in side bar is a window command only.
         # 'goto anything' activates views but doesn't set a window until the file is selected.
-        if not view.window():
+        if view.settings().get("is_widget", False):
             return
 
         global lastView
