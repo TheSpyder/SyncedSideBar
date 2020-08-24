@@ -116,7 +116,6 @@ def show_view(view):
 
         if shouldReveal and reveal != False:
             win.run_command('reveal_in_side_bar')
-            win.run_command('focus_group', "args": { "group": 1 })
 
     # When using quick switch project, the view activates before the sidebar is ready.
     # This tiny delay is imperceptible but works around the issue.
