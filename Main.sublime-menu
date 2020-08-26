@@ -13,20 +13,11 @@
                 [
                     {
                         "caption": "SyncedSideBar",
-                        "children":
-                        [
-                            {
-                                "command": "open_file", 
-                                "args": {"file": "${packages}/SyncedSideBar/SyncedSideBar.sublime-settings"},
-                                "caption": "Settings – Default"
-                            },
-                            {
-                                "command": "open_file", 
-                                "args": {"file": "${packages}/User/SyncedSideBar.sublime-settings"},
-                                "caption": "Settings – User"
-                            },
-                            { "caption": "-" }
-                        ]
+                        "command": "edit_settings",
+                        "args": {
+                            "base_file": "${packages}/SyncedSideBar/SyncedSideBar.sublime-settings",
+                            "default": "${packages}/User/SyncedSideBar.sublime-settings",
+                        }
                     }
                 ]
             }
