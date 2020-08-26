@@ -124,6 +124,9 @@ def show_view(view):
 
 class SideBarListener(sublime_plugin.EventListener):
     def on_activated(self, view):
+
+        self.packageSettings = sublime.load_settings('SyncedSideBar.sublime-settings')
+
         # don't even consider updating state if we don't have a window.
         # reveal in side bar is a window command only.
         # 'goto anything' activates views but doesn't set a window until the file is selected.
@@ -142,10 +145,21 @@ class SideBarListener(sublime_plugin.EventListener):
 
     # Sublime text v3 window command listener, safe to include unconditionally as it's simply ignored by v2.
     # Eventually, v3 support below 3098 will be dropped and this can be deleted.
-    def on_window_command(self, window, command_name, args):
-        if command_name == 'toggle_side_bar':
+    def on_window_command(self, window, command, args):
+        if command == 'toggle_side_bar':
             global sidebarVisible
             sidebarVisible = not sidebarVisible
+
+        # This is needed for the `on_post_window_command` to work
+        if command == 'reveal_in_side_bar':
+            self.last_view = window.active_view()
+
+
+    # Back to the file window after `reveal_in_side_bar` command
+    def on_post_window_command(self, window, command, args):
+        if command == 'reveal_in_side_bar':
+            if self.packageSettings.get('focus-on-view'):
+                window.focus_view(self.last_view)
 
 
 class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
