@@ -13,13 +13,6 @@
 	"reveal-on-activate": true,
 
 	/*
-	 * After reveal on sidebar, focus on file window view.
-	 *
-	 * Defaults to true.
-	 */
-	"focus-on-view": true,
-
-	/*
 	 * Controls window switch behaviour.
 	 *
 	 * By default, when new windows are opened the plugin will switch to
