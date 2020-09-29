@@ -147,10 +147,12 @@ class SideBarListener(sublime_plugin.EventListener):
             global sidebarVisible
             sidebarVisible = not sidebarVisible
 
-    # Back to the file window after `reveal_in_side_bar` command
     def on_post_window_command(self, window, command, args):
-        if command == 'reveal_in_side_bar':
-            window.focus_view(lastView)
+        # v4 leaves focus on the sidebar after a `reveal_in_side_bar` command
+        # So we need to manually force focus back to the file window
+        if (int(sublime.version()) > 4000):
+            if command == 'reveal_in_side_bar':
+                window.focus_view(lastView)
 
 
 class SideBarUpdateSync(sublime_plugin.ApplicationCommand):
