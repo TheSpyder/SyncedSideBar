@@ -150,7 +150,7 @@ class SideBarListener(sublime_plugin.EventListener):
     def on_post_window_command(self, window, command, args):
         # v4 leaves focus on the sidebar after a `reveal_in_side_bar` command
         # So we need to manually force focus back to the file window
-        if (int(sublime.version()) > 4000):
+        if (int(sublime.version()) > 4000 and int(sublime.version()) < 4099):
             if command == 'reveal_in_side_bar':
                 window.focus_view(lastView)
 
