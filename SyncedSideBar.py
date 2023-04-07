@@ -115,6 +115,11 @@ def show_view(view):
             shouldReveal = sidebarVisible
 
         if shouldReveal and reveal != False:
+            # Workaround for crash when editing Git commit message: https://github.com/TheSpyder/SyncedSideBar/issues/61
+            currentFileName = win.active_view().file_name()
+            if currentFileName is not None and '/.git/' in currentFileName:
+                return
+
             win.run_command('reveal_in_side_bar')
 
     # When using quick switch project, the view activates before the sidebar is ready.
