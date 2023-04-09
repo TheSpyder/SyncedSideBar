@@ -107,6 +107,11 @@ def show_view(view):
     win = view.window()
 
     def revealLater():
+        # Some versions of Sublime Text crash when revealing files under `.git/` in the side bar:
+        # https://github.com/sublimehq/sublime_text/issues/5881
+        if int(sublime.version()) < 4148 and '/.git/' in str(win.active_view().file_name()):
+            return
+
         if (int(sublime.version()) >= 3098):
             # API provided by sublime
             shouldReveal = win.is_sidebar_visible()
