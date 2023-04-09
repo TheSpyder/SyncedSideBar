@@ -115,9 +115,9 @@ def show_view(view):
             shouldReveal = sidebarVisible
 
         if shouldReveal and reveal != False:
-            # Workaround for crash when editing Git commit message: https://github.com/TheSpyder/SyncedSideBar/issues/61
-            currentFileName = win.active_view().file_name()
-            if currentFileName is not None and '/.git/' in currentFileName:
+            # Some versions of Sublime Text crash when revealing files under `.git/` in the side bar:
+            # https://github.com/sublimehq/sublime_text/issues/5881
+            if int(sublime.version()) < 4148 and '/.git/' in str(win.active_view().file_name()):
                 return
 
             win.run_command('reveal_in_side_bar')
