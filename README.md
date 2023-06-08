@@ -43,7 +43,7 @@ Settings can be overridden on a per-project basis by adding them to the `setting
 
 * `reveal-on-activate` controls the automatic reveal as the active tab changes (true by default).
 * `reveal-all-tabs` controls whether or not the plugin will cycle through all tabs when a window opens (true by default).
-
+* `reveal-ignore-patterns` controls which file patterns to ignore when revealing a tab in the sidebar (none by default).
 
 Sublime versions and sidebar visibility
 ---------------------------------------
