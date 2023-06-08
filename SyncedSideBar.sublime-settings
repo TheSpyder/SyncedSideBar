@@ -18,5 +18,12 @@
 	 * By default, when new windows are opened the plugin will switch to
 	 * all available views so the sidebar is expanded properly.
 	 */
-	"reveal-all-tabs": true
+	"reveal-all-tabs": true,
+
+	/*
+	 * List of file patterns to ignore when revealing a tab in the sidebar.
+	 *
+	 * By default, no file patterns are ignored.
+	 */
+	"reveal-ignore-patterns": [],
 }

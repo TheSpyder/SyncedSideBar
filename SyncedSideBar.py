@@ -1,5 +1,7 @@
 # pyright: reportMissingImports=false
 
+import fnmatch
+
 import sublime
 import sublime_plugin
 
@@ -19,6 +21,9 @@ windows = {}
 # preference from plugin settings file
 pluginPref = DEFAULT_VISIBILITY
 
+# List of file patterns to ignore when revealing a tab in the sidebar
+pluginPatterns = []
+
 # flag for alt-tab focus check
 lastView = None
 
@@ -35,11 +40,21 @@ def plugin_loaded():
             global pluginPref
             pluginPref = vis
 
+        ignores = userSettings.get('reveal-ignore-patterns')
+        if ignores:
+            global pluginPatterns
+            pluginPatterns = ignores
+
     def read_pref_package():
         vis = packageSettings.get('reveal-on-activate')
         if vis is not None:
             global pluginPref
             pluginPref = vis
+
+        ignores = packageSettings.get('reveal-ignore-patterns')
+        if ignores:
+            global pluginPatterns
+            pluginPatterns = ignores
 
     # read initial setting
     read_pref_package()
@@ -111,26 +126,39 @@ def manage_state(view):
 def show_view(view):
     userPref = view.settings().get('reveal-on-activate')
     reveal = userPref if userPref is not None else pluginPref
-    window = view.window()
+
+    userPatterns = view.settings().get('reveal-ignore-patterns')
+    patterns = userPatterns if userPatterns else pluginPatterns
+
+    activeWindow = view.window()
 
     def revealLater():
-        # Some versions of Sublime Text crash when revealing files
-        # under `.git/` in the side bar:
-        # https://github.com/sublimehq/sublime_text/issues/5881
-        if int(sublime.version()) < 4148:
-            activeView = window.active_view()
-            if activeView and '/.git/' in str(activeView.file_name()):
+        activeView = activeWindow.active_view()
+
+        if activeView:
+            filename = activeView.file_name()
+
+            if not filename:
+                return
+
+            # Some versions of Sublime Text crash when revealing files
+            # under `.git/` in the side bar:
+            # https://github.com/sublimehq/sublime_text/issues/5881
+            if int(sublime.version()) < 4148 and '/.git/' in filename:
+                return
+
+            if any(fnmatch.fnmatch(filename, pattern) for pattern in patterns):
                 return
 
         if (int(sublime.version()) >= 3098):
             # API provided by sublime
-            shouldReveal = window.is_sidebar_visible()
+            shouldReveal = activeWindow.is_sidebar_visible()
         else:
             # backwards compatibility
             shouldReveal = sidebarVisible
 
         if shouldReveal and reveal is not False:
-            window.run_command('reveal_in_side_bar')
+            activeWindow.run_command('reveal_in_side_bar')
 
     # When using quick switch project, the view activates before the sidebar
     # is ready. This tiny delay is imperceptible but works around the issue.
